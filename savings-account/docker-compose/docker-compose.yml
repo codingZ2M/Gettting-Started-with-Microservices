@@ -1,0 +1,118 @@
+version: "3.8"
+
+services:
+  
+  config-server:
+    image: codingz2m/config-server:1.0.0
+    mem_limit: 700m
+    ports:
+      - "9091:9091"
+    networks:
+      - codingz2m-network
+  
+  servicediscovery:
+    image: codingz2m/service-discovery:1.0.0
+    mem_limit: 700m
+    ports:
+      - "9092:9092"
+    networks:
+     - codingz2m-network
+    depends_on:
+      - config-server
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 15s
+        max_attempts: 3
+        window: 120s
+    environment:
+      SPRING_PROFILES_ACTIVE: default
+      SPRING_CONFIG_IMPORT: configserver:http://config-server:9091/
+      
+  savingsaccount:
+    image: codingz2m/savings-account:1.0.0
+    mem_limit: 700m
+    ports:
+      - "8081:8081"
+    networks:
+      - codingz2m-network
+    depends_on:
+      - config-server
+      - servicediscovery
+    deploy:
+      restart_policy:
+       condition: on-failure
+       delay: 5s
+       max_attempts: 3
+       window: 120s
+    environment:
+      SPRING_PROFILES_ACTIVE: default
+      SPRING_CONFIG_IMPORT: configserver:http://config-server:9091/  
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://servicediscovery:9092/eureka/
+    
+  payment-transaction:
+    image: codingz2m/payment-transaction:1.0.0
+    mem_limit: 700m
+    ports:
+      - "8082:8082"
+    networks:
+      - codingz2m-network
+    depends_on:
+      - config-server
+      - servicediscovery
+    deploy:
+      restart_policy:
+       condition: on-failure
+       delay: 5s
+       max_attempts: 3
+       window: 120s
+    environment:
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://servicediscovery:9092/eureka/
+    
+  mutualfund:
+    image: codingz2m/mutual-fund:1.0.0
+    mem_limit: 700m
+    ports:
+      - "8083:8083"
+    networks:
+      - codingz2m-network
+    depends_on:
+      - config-server
+      - servicediscovery
+    deploy:
+      restart_policy:
+       condition: on-failure
+       delay: 5s
+       max_attempts: 3
+       window: 120s
+    environment:
+      SPRING_PROFILES_ACTIVE: default
+      SPRING_CONFIG_IMPORT: configserver:http://config-server:9091/  
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://servicediscovery:9092/eureka/
+   
+  gatewayserver:
+    image: codingz2m/gateway-server:1.0.0
+    mem_limit: 700m
+    ports:
+      - "9093:9093"
+    networks:
+      - codingz2m-network
+    depends_on:
+      - config-server
+      - servicediscovery
+      - savingsaccount
+      - payment-transaction
+      - mutualfund
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 45s
+        max_attempts: 3
+        window: 180s
+    environment:
+      SPRING_PROFILES_ACTIVE: default
+      SPRING_CONFIG_IMPORT: configserver:http://config-server:9091/  
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://servicediscovery:9092/eureka/
+   
+networks:
+  codingz2m-network:
