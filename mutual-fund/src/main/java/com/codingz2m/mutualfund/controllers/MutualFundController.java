@@ -28,8 +28,6 @@ import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 
 import org.springframework.web.bind.annotation.RequestBody;
 
-
-
 @RestController
 @RequestMapping("/mutual-fund")
 public class MutualFundController {
@@ -38,6 +36,8 @@ public class MutualFundController {
 	private MutualFundServiceConfig mutualFundServiceConfig;
 	@Autowired
 	private CustomerServiceInfo customerServiceInfo;
+	@Autowired
+	ModelMapper modelMapper;
 	
 	private MutualFundService mutualFundService;
 	private SavingsAccountProxy savingsAccountProxy;
@@ -70,7 +70,6 @@ public class MutualFundController {
 	public ResponseEntity<MutualFundResponse> createMutualFund( 
 			@Valid @RequestBody MutualFundRequest mutualFundRequest ) {
 		MutualFund mutualFund=null;
-		ModelMapper modelMapper=null;
 		MutualFundResponse mutualFundResponse = null;
 		MutualFundDTO mutualFundDTO = null;
 		boolean fundTransactionState=false;
@@ -78,7 +77,7 @@ public class MutualFundController {
 		 try {
 		 fundTransactionState = savingsAccountProxy.initiateMutualFundTransaction(
 				mutualFundRequest.getSavingsAccountId(),mutualFundRequest.getInvestedValue());
-		 	modelMapper = new ModelMapper(); 	
+		 	 	
 			modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
 			mutualFundDTO = modelMapper.map( mutualFundRequest, MutualFundDTO.class); 
 			
@@ -123,7 +122,7 @@ public class MutualFundController {
 	
 
 	private ResponseEntity<MutualFundResponse>mutualFundProcessStateFallBack(MutualFundRequest mutualFundRequest, Throwable t) {
-		 ModelMapper modelMapper = new ModelMapper();
+		 
 		MutualFundResponse mutualFundResponse = modelMapper.map(mutualFundRequest, MutualFundResponse.class);
 		 return ResponseEntity.status(HttpStatus.CREATED).body(mutualFundResponse);
 	}

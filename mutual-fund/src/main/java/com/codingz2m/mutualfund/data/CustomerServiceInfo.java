@@ -10,6 +10,7 @@ import lombok.ToString;
 @Component
 @Getter @Setter @ToString
 public class CustomerServiceInfo {
+	
 	 private String message;
 	 private String mail;
 	 private String contact;

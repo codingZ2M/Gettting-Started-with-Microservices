@@ -1,6 +1,7 @@
 package com.codingz2m.savingsaccount.controllers;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 import javax.validation.Valid;
@@ -37,6 +38,9 @@ public class SavingsAccountController {
 	@Autowired
 	private CustomerServiceInfo customerServiceInfo;
 	
+	@Autowired
+	private ModelMapper modelMapper;
+	
 	private SavingsAccountService savingsAccountService;
 	private PaymentTransactionProxy paymentTransactionProxy;
 	
@@ -61,8 +65,7 @@ public class SavingsAccountController {
 	// HTTP POST with SpringMVC
 	@PostMapping
 	public ResponseEntity<SavingsAccountResponse> createSavingsAccount( @Valid @RequestBody SavingsAccountRequest savingsAccountRequest) {
-
-	ModelMapper modelMapper = new ModelMapper(); 	
+	
 	modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
 
 	SavingsAccountDTO savingsAccountDTO = modelMapper.map( savingsAccountRequest, SavingsAccountDTO.class); 		
@@ -74,19 +77,29 @@ public class SavingsAccountController {
 	
 	
 	@GetMapping(path ="/all")
-	public List<SavingsAccount> getAllSavingsAccount() {
+	public List<SavingsAccountResponse> getAllSavingsAccount() {
+		
+		modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
+		
 		List <SavingsAccount> savingsAccountList   = new ArrayList<>();
 		savingsAccountList = savingsAccountService.getSavingsAccounts();
-		  return savingsAccountList;
+		
+		List <SavingsAccountResponse> savingsAccountResponseList =  new ArrayList<>();
+		savingsAccountResponseList = Arrays.asList(modelMapper.map(savingsAccountList, SavingsAccountResponse[].class));
+		return savingsAccountResponseList;
 	}
 	
 	
 	
 	@PostMapping("/getSavingsAccount")
-	public SavingsAccount findSavingsAccount(@RequestBody SavingsAccountRequest savingsAccountRequest) {
+	public SavingsAccountResponse findSavingsAccount(@RequestBody SavingsAccountRequest savingsAccountRequest) {
+		
+		modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
 		SavingsAccount savingsAccount = savingsAccountService.findAccountById(savingsAccountRequest.getId());
+		
 		if (savingsAccount != null) {
-			return savingsAccount;
+			SavingsAccountResponse savingsAccountResponse = modelMapper.map(savingsAccount, SavingsAccountResponse.class);
+			return savingsAccountResponse;
 		} else {
 			return null;
 		}

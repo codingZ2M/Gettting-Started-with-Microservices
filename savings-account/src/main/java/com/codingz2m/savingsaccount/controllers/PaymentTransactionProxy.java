@@ -13,7 +13,7 @@ import java.util.UUID;
 
 // ****** MAKING REST CALLS USING FEIGN CLIENT **********
 
-//@FeignClient(name = "PAYMENT-TRANSACTION", url = "${PAYMENT_TRANSACTION_SERVICE_HOST:http://localhost}:8082")
+//@FeignClient(name = "payment-transaction", url = "${PAYMENT_TRANSACTION_SERVICE_HOST:http://localhost}:8082")
 @FeignClient("PAYMENT-TRANSACTION")
 public interface PaymentTransactionProxy {
 

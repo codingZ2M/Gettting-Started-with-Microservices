@@ -36,6 +36,9 @@ public class MutualFundPortfolioController {
 	
 	private MutualFundService mutualFundService;
 	
+	@Autowired
+	ModelMapper modelMapper;
+	
 	@Autowired	
 	public MutualFundPortfolioController(@Qualifier("mutualFundPortfolio") MutualFundService mutualFundService) {
 		super();
@@ -47,7 +50,6 @@ public class MutualFundPortfolioController {
 	@PostMapping	
 		public ResponseEntity<MutualFundPortfolioResponse> createMutualFundPortfolio(@Valid @RequestBody MutualFundPortfolioRequest mutualFundPortfolioRequest) {
 		
-			ModelMapper modelMapper = new ModelMapper(); 	
 			modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
 
 			MutualFundPortfolioDTO  mutualFundPortfolioDTO = modelMapper.map( mutualFundPortfolioRequest, MutualFundPortfolioDTO.class); 		
@@ -66,7 +68,6 @@ public class MutualFundPortfolioController {
 		
 		  List <MutualFundResponse> mutualFundResponse   = new ArrayList<>();
 		  
-		  ModelMapper modelMapper = new ModelMapper(); 	
 			modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
 			
 			 List<MutualFund> mutualFundList = mutualFundService.getMutualFundsOfPortfolio(mutualFundPortfolioId);

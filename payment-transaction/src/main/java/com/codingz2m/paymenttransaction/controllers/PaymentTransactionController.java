@@ -27,6 +27,8 @@ import com.codingz2m.paymenttransaction.ui.models.PaymentTransactionResponse;
 public class PaymentTransactionController {
 
 	private PaymentTransactionService paymentTransactionService;
+	@Autowired	
+	ModelMapper modelMapper;
 	
 	@Autowired	
 	public PaymentTransactionController(PaymentTransactionService paymentTransactionService) {
@@ -58,7 +60,6 @@ public class PaymentTransactionController {
 		  List <PaymentTransaction> paymentTransactionList   = new ArrayList<>();
 		  List <PaymentTransactionResponse> paymentTransactionResponseList   = new ArrayList<>();
 		  
-		  ModelMapper modelMapper = new ModelMapper(); 	
 			modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
 			
 			paymentTransactionList = paymentTransactionService.getPaymentTransactions(savingsAccountId);
