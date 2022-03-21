@@ -1,4 +1,4 @@
-package com.codingz2m.mutualfund.controllers;
+	package com.codingz2m.mutualfund.controllers;
 
 import javax.validation.Valid;
 
@@ -7,6 +7,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,6 +25,7 @@ import com.codingz2m.mutualfund.ui.models.MutualFundRequest;
 import com.codingz2m.mutualfund.ui.models.MutualFundResponse;
 import com.codingz2m.mutualfund.ui.models.PaymentTransactionRequest;
 
+
 import feign.FeignException.FeignServerException;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 
@@ -31,6 +34,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 @RestController
 @RequestMapping("/mutual-fund")
 public class MutualFundController {
+	
+	private static final Logger logger = LoggerFactory.getLogger(MutualFundController.class);
 	
 	@Autowired
 	private MutualFundServiceConfig mutualFundServiceConfig;
@@ -69,6 +74,8 @@ public class MutualFundController {
 							="mutualFundProcessStateFallBack")
 	public ResponseEntity<MutualFundResponse> createMutualFund( 
 			@Valid @RequestBody MutualFundRequest mutualFundRequest ) {
+		
+		logger.info("createMutualFund() method in mutual-fund service started");
 		MutualFund mutualFund=null;
 		MutualFundResponse mutualFundResponse = null;
 		MutualFundDTO mutualFundDTO = null;
@@ -115,7 +122,7 @@ public class MutualFundController {
 				//		+ mutualFundRequest.getSavingsAccountId());
 			 //return ResponseEntity.status(HttpStatus.CREATED).body(mutualFundResponse);
 		 }
-	
+		 logger.info("createMutualFund() method in mutual-fund service ended");
 		 return ResponseEntity.status(HttpStatus.CREATED).body(mutualFundResponse);
   }
 	

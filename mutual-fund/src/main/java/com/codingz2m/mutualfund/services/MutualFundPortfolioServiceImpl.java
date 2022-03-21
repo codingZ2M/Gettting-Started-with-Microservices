@@ -24,6 +24,8 @@ import java.util.Optional;
 public class MutualFundPortfolioServiceImpl implements MutualFundService {
 	
 	MutualFundPortfolioRepository  mutualFundPortfolioRepository;
+	@Autowired
+	ModelMapper modelMapper;
 	
 	@Autowired
 	public MutualFundPortfolioServiceImpl(MutualFundPortfolioRepository mutualFundPortfolioRepository) {
@@ -33,7 +35,7 @@ public class MutualFundPortfolioServiceImpl implements MutualFundService {
 
 	@Override
 	public MutualFundPortfolio createMutualFundPortfolio(MutualFundPortfolioDTO mutualFundPortfolioDTO) {
-		 ModelMapper modelMapper = new ModelMapper(); 
+		 
 		   modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
 		  
 		   MutualFundPortfolio mutualFundPortfolio = modelMapper.map(mutualFundPortfolioDTO, MutualFundPortfolio.class);

@@ -8,6 +8,8 @@ import javax.validation.Valid;
 
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
@@ -33,6 +35,8 @@ import com.codingz2m.savingsaccount.ui.models.PaymentTransactionRequest;
 @RequestMapping("/savings-account")
 public class SavingsAccountController {
 
+	private static final Logger logger = LoggerFactory.getLogger(SavingsAccountController.class);
+	
 	@Autowired
 	private SavingsAccountServiceConfig savingsAccountServiceConfig;
 	@Autowired
@@ -65,13 +69,14 @@ public class SavingsAccountController {
 	// HTTP POST with SpringMVC
 	@PostMapping
 	public ResponseEntity<SavingsAccountResponse> createSavingsAccount( @Valid @RequestBody SavingsAccountRequest savingsAccountRequest) {
-	
+		
 	modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
 
 	SavingsAccountDTO savingsAccountDTO = modelMapper.map( savingsAccountRequest, SavingsAccountDTO.class); 		
 	SavingsAccount savingsAccount  = savingsAccountService.createSavingsAccount(savingsAccountDTO);
 
 	SavingsAccountResponse savingsAccountResponse = modelMapper.map(savingsAccount, SavingsAccountResponse.class);
+	
 	return ResponseEntity.status(HttpStatus.CREATED).body(savingsAccountResponse);
   }
 	
@@ -136,8 +141,12 @@ public class SavingsAccountController {
 	public boolean initiateMutualFundTransaction(
 			@PathVariable(value="savings-account-id")UUID savingsAccountId, 
 			@PathVariable(value="mutual-fund-amonunt") double mutualFundAmonunt  ) {
+		
+		logger.info("initiateMutualFundTransaction() method in savings-account service started");
+		
 	  boolean fundTransactionState;
 	  fundTransactionState = savingsAccountService.mutualFundTransaction(savingsAccountId, mutualFundAmonunt);
+	  logger.info("initiateMutualFundTransaction() method in savings-account service ended");
 	  return fundTransactionState;
 	}
 

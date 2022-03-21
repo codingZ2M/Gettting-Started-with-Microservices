@@ -21,6 +21,9 @@ public class PaymentTransactionServiceImpl implements PaymentTransactionService 
 	PaymentTransactionRepository  paymentTransactionRepository;
 	
 	@Autowired
+	ModelMapper modelMapper;
+	
+	@Autowired
 	public PaymentTransactionServiceImpl(PaymentTransactionRepository paymentTransactionRepository) {
 		super();
 		this.paymentTransactionRepository = paymentTransactionRepository;
@@ -29,8 +32,7 @@ public class PaymentTransactionServiceImpl implements PaymentTransactionService 
 
 	@Override
 	public PaymentTransaction paymentTransaction(PaymentTransactionDTO paymentTransactionDTO) {
-		
-		 ModelMapper modelMapper = new ModelMapper(); 
+		 
 		  modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
 		  
 		  PaymentTransaction paymentTransaction = modelMapper.map(paymentTransactionDTO, PaymentTransaction.class);

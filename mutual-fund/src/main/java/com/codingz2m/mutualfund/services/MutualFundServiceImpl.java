@@ -29,6 +29,9 @@ public class MutualFundServiceImpl implements MutualFundService {
 	MutualFundPortfolioRepository mutualFundPortfolioRepository;
 	
 	@Autowired
+	ModelMapper modelMapper;
+	
+	@Autowired
 	public MutualFundServiceImpl(MutualFundRepository mutualFundRepository,
 			MutualFundPortfolioRepository mutualFundPortfolioRepository
 			) {
@@ -45,8 +48,7 @@ public class MutualFundServiceImpl implements MutualFundService {
 		 double totalInvestedValue = mutualFundPortfolioRepository.getPortfolioTotalInvestedValue(mutualFundPortfolioId);
 			double investedValue =  mutualFundDTO.getInvestedValue();
 			totalInvestedValue += investedValue;
-			
-			 ModelMapper modelMapper = new ModelMapper(); 
+			 
 			  modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
 			  
 			  MutualFund mutualFund = modelMapper.map(mutualFundDTO, MutualFund.class);

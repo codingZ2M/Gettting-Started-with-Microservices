@@ -2,6 +2,14 @@ version: "3.8"
 
 services:
   
+  zipkin:
+    image: openzipkin/zipkin
+    mem_limit: 700m
+    ports:
+      - "9411:9411"
+    networks:
+      - codingz2m-network
+  
   config-server:
     image: codingz2m/config-server:1.0.0
     mem_limit: 700m
@@ -9,7 +17,12 @@ services:
       - "9091:9091"
     networks:
       - codingz2m-network
-  
+    depends_on:
+      - zipkin
+    environment:
+      SPRING_PROFILES_ACTIVE: default
+      SPRING_ZIPKIN_BASEURL: http://zipkin:9411/
+      
   servicediscovery:
     image: codingz2m/service-discovery:1.0.0
     mem_limit: 700m
@@ -28,6 +41,7 @@ services:
     environment:
       SPRING_PROFILES_ACTIVE: default
       SPRING_CONFIG_IMPORT: configserver:http://config-server:9091/
+      SPRING_ZIPKIN_BASEURL: http://zipkin:9411/
       
   savingsaccount:
     image: codingz2m/savings-account:1.0.0
@@ -49,6 +63,7 @@ services:
       SPRING_PROFILES_ACTIVE: default
       SPRING_CONFIG_IMPORT: configserver:http://config-server:9091/  
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://servicediscovery:9092/eureka/
+      SPRING_ZIPKIN_BASEURL: http://zipkin:9411/
     
   payment-transaction:
     image: codingz2m/payment-transaction:1.0.0
@@ -68,6 +83,7 @@ services:
        window: 120s
     environment:
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://servicediscovery:9092/eureka/
+      SPRING_ZIPKIN_BASEURL: http://zipkin:9411/
     
   mutualfund:
     image: codingz2m/mutual-fund:1.0.0
@@ -89,6 +105,7 @@ services:
       SPRING_PROFILES_ACTIVE: default
       SPRING_CONFIG_IMPORT: configserver:http://config-server:9091/  
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://servicediscovery:9092/eureka/
+      SPRING_ZIPKIN_BASEURL: http://zipkin:9411/
    
   gatewayserver:
     image: codingz2m/gateway-server:1.0.0

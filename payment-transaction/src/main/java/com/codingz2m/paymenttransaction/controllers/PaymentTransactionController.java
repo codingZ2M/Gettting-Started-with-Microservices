@@ -7,6 +7,8 @@ import java.util.UUID;
 
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,6 +28,8 @@ import com.codingz2m.paymenttransaction.ui.models.PaymentTransactionResponse;
 @RequestMapping("/payment-transaction")
 public class PaymentTransactionController {
 
+	private static final Logger logger = LoggerFactory.getLogger(PaymentTransactionController.class);
+	
 	private PaymentTransactionService paymentTransactionService;
 	@Autowired	
 	ModelMapper modelMapper;
@@ -38,7 +42,7 @@ public class PaymentTransactionController {
 	@PostMapping
 	public void initiatePaymentTransaction( @RequestBody PaymentTransactionRequest paymentTransactionRequest
 			) {
-		
+		logger.info("initiatePaymentTransaction() method in payment-transaction service started");
 		PaymentTransactionDTO paymentTransactionDTO = new PaymentTransactionDTO();
 		paymentTransactionDTO.setTransactionDate(paymentTransactionRequest.getTransactionDate());
 		paymentTransactionDTO.setTransactionDetails(paymentTransactionRequest.getTransactionDetails());
@@ -47,7 +51,7 @@ public class PaymentTransactionController {
 		paymentTransactionDTO.setSavingsAccountId(paymentTransactionRequest.getSavingsAccountId());
 		
 	    paymentTransactionService.paymentTransaction(paymentTransactionDTO);
-	
+	    logger.info("initiatePaymentTransaction() method in payment-transaction service ended");
 	}
 	
 	
